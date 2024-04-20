@@ -1,4 +1,4 @@
-````markdown
+
 # Flask Student Assignment Management
 
 Welcome to the Flask Student Assignment Management app! This application provides a platform for managing student assignments with authentication functionality.
