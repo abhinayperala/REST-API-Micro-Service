@@ -1,0 +1,2 @@
+CREATE TABLE assignments (id INTEGER PRIMARY KEY, name TEXT, mentor TEXT, leader TEXT, deadline DATE)
+CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL)

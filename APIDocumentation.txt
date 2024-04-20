@@ -1,0 +1,28 @@
+1) Authentication Endpoint
+
+-> Login
+   URL: localhost:3000/login
+   Method: POST
+
+-> Register
+   URL: localhost:3000/login
+   Method: POST
+
+2) REST API Endpoints for Student Assignments
+
+-> GET All Assignments
+   URL: localhost:3000/lists
+   Method: POST
+
+-> Add New Assignment
+   URL: localhost:3000/addrec
+   Method: POST
+
+-> Update Assignment
+   URL: localhost:3000/update
+   Method: PUT
+
+-> Delete Assignment
+   URL: localhost:3000/update
+   Method: DELETE
+
