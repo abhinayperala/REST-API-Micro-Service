@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Mentor Name</td>
+            <td>Leader</td>
+            <td>Deadline</td>
+        </thead>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row['id'] }}</td>
+            <td>{{ row['name'] }}</td>
+            <td>{{ row['mentor'] }}</td>
+            <td>{{ row['leader'] }}</td>
+            <td>{{ row['deadline'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Go to Home Page</a>
+</body>
+</html>

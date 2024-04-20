@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{{url_for('register')}}" method="POST">
+        <h3> Enter your Detaisl</h3>
+        ID:<br>
+        <input type="number" placeholder="Enter your ID" name="id"><br>
+        Username<br>
+        <input type="text" placeholder="Enter your name" name="name"><br>
+        Password<br>
+        <input type="text" placeholder="Enter your password" name="pass"><br>
+        
+        <input type="submit" value="submit"><br>
+    </form>
+</body>
+</html>
