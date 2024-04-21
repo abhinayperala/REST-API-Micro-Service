@@ -1,43 +1,14 @@
-from flask import Flask, render_template, request, jsonify, make_response, session
+from flask import Flask, render_template, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import redirect, url_for
 import sqlite3 as sql
 import jwt
-from datetime import datetime, timedelta
-from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '42d375b8b3a640d9ba56f495be6378c8'
 
-
-def token_required(func):
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        token = request.args.get('token')
-        if not token:
-            return jsonify({'Alert' : 'Token is Missing'})
-        try:
-            payload = jwt.decode(token, app.config['SECRET KEY'])
-        except:
-            return jsonify({'Alert!' : 'Invalid Token!'})
-    return decorated
-
 @app.route('/')
 def home():
-    if not session.get('logged_in'):
-        return render_template('login.html')
-    else:
-        return 'Logged in Currently'
-
-
-@app.route('/public')
-def public():
-    return 'For Public'
-
-@app.route('/auth')
-@token_required
-def auth():
-    return 'JWT is verified. Welcome to your dashboard!'
+    return render_template('home.html')
 
 @app.route('/enternew')
 def new_assignment():
@@ -59,7 +30,13 @@ def delete_assignment():
 def register_user():
     return render_template('register.html')
 
-
+def get_user(username):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM users WHERE username=?", (username,))
+    user = cur.fetchone()
+    con.close()
+    return user
 
 @app.route('/register', methods=['POST','GET'])
 def register():
@@ -81,32 +58,29 @@ def register():
         finally:
             return render_template("result.html",msg=msg)
             con.close()
-
-def get_user(username):
-    con = sql.connect("database.db")
-    cur = con.cursor()
-    cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    user = cur.fetchone()
-    con.close()
-    return user
         
 @app.route('/login', methods=['POST'])
 def login():
+    user_id = request.form.get('id')
     username = request.form.get('name')
     password = request.form.get('pass')
-    if username and password==get_user(username):
-        session['logged_in'] = True
-        token = jwt.encode({
-            'user' : request.form['username'],
-            'expiration' : str(datetime.utcnow() + timedelta(seconds=120))
-        },
-        app.config['SECRET_KEY'])
-        return jsonify({'token' : token.decode('utc-8')})
-    else:
-        return make_response('Unable to verify',403,{'WWW-Authenticate' : 'Basic realm: Authentication failed'})
 
+    if not username or not password:
+        return render_template('fail.html', message='Username and password are required'), 400
 
-   
+    # In a real application, you would authenticate the user based on the provided username and password.
+    # For demonstration purposes, we'll just use a hardcoded user ID here.
+    
+    with sql.connect("database.db") as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cur.fetchone()
+        if user and check_password_hash(user[2], password):
+            # User exists and password matches, generate JWT token
+            token = jwt.encode({'user_id': user[0]}, app.config['SECRET_KEY'], algorithm='HS256')
+            return render_template('success.html', token=token.decode('UTF-8'))
+        # User does not exist or password does not match
+        return render_template('login.html', message='Invalid username or password'), 401
 
 @app.route('/addrec', methods=['POST','GET'])
 def addrec():
